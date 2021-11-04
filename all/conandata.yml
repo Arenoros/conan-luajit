@@ -1,0 +1,10 @@
+sources:
+  "2.0.5":
+    url: "http://luajit.org/download/LuaJIT-2.0.5.tar.gz"
+    sha256: "874b1f8297c697821f561f9b73b57ffd419ed8f4278c82e05b48806d30c1e979"
+  "2.1.0-beta4":
+    url: "https://github.com/Arenoros/LuaJIT/archive/refs/tags/v2.1.0-beta4.tar.gz"
+    sha256: "f016afb044fc2a9b6b8bde2c2389acc1072fcdde704081520689064319dc2b9b"
+  "2.1.0-b3-openresty":
+    url: "https://github.com/Arenoros/luajit2/archive/refs/tags/v2.1-20211102.tar.gz"
+    sha256: "40551fa43970a26165eea4c8365fde63e0c95e9f6fc35a5acfd53bf5704fd929"
