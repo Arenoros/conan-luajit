@@ -3,3 +3,5 @@ versions:
     folder: "all"
   "v2.1.0-beta4":
     folder: "all"
+  "2.1.0-b3-openresty":
+    folder: "all"
