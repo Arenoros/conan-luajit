@@ -45,7 +45,7 @@
 #include "../lj_meta.h"
 
 LUALIB_API void *
-luaL_pushcdata(struct lua_State *L, uint32_t ctypeid)
+luaT_pushcdata(struct lua_State *L, uint32_t ctypeid)
 {
 	/*
 	 * ctypeid is actually has CTypeID type.
@@ -98,13 +98,13 @@ luaL_pushcdata(struct lua_State *L, uint32_t ctypeid)
 }
 
 LUALIB_API int
-luaL_iscdata(struct lua_State *L, int idx)
+luaT_iscdata(struct lua_State *L, int idx)
 {
 	return lua_type(L, idx) == LUA_TCDATA;
 }
 
 LUALIB_API void *
-luaL_checkcdata(struct lua_State *L, int idx, uint32_t *ctypeid)
+luaT_checkcdata(struct lua_State *L, int idx, uint32_t *ctypeid)
 {
 	/* Calculate absolute value in the stack. */
 	if (idx < 0)
@@ -122,7 +122,7 @@ luaL_checkcdata(struct lua_State *L, int idx, uint32_t *ctypeid)
 }
 
 LUALIB_API uint32_t
-luaL_ctypeid(struct lua_State *L, const char *ctypename)
+luaT_ctypeid(struct lua_State *L, const char *ctypename)
 {
 	int idx = lua_gettop(L);
 	/* This function calls ffi.typeof to determine CDataType */
@@ -145,10 +145,10 @@ luaL_ctypeid(struct lua_State *L, const char *ctypename)
 	return ctypeid;
 }
 LUALIB_API void
-luaL_register_type(struct lua_State *L, const char *type_name, const struct luaL_Reg *methods);
+luaT_register_type(struct lua_State *L, const char *type_name, const struct luaL_Reg *methods);
 
 LUALIB_API uint32_t
-luaL_metatype(struct lua_State *L, const char *ctypename,
+luaT_metatype(struct lua_State *L, const char *ctypename,
 	      const struct luaL_Reg *methods)
 {
 	/* Create a metatable for our ffi metatype. */
@@ -176,7 +176,7 @@ luaL_metatype(struct lua_State *L, const char *ctypename,
 }
 
 LUALIB_API int
-luaL_cdef(struct lua_State *L, const char *what)
+luaT_cdef(struct lua_State *L, const char *what)
 {
 	int idx = lua_gettop(L);
 	(void) idx;
@@ -194,7 +194,7 @@ luaL_cdef(struct lua_State *L, const char *what)
 }
 
 LUALIB_API void
-luaL_setcdatagc(struct lua_State *L, int idx)
+luaT_setcdatagc(struct lua_State *L, int idx)
 {
 	/* Calculate absolute value in the stack. */
 	if (idx < 0)
@@ -229,7 +229,7 @@ luaL_setcdatagc(struct lua_State *L, int idx)
  * A helper to register a single type metatable.
  */
 LUALIB_API void
-luaL_register_type(struct lua_State *L, const char *type_name,
+luaT_register_type(struct lua_State *L, const char *type_name,
 		   const struct luaL_Reg *methods)
 {
 	luaL_newmetatable(L, type_name);
@@ -247,7 +247,7 @@ luaL_register_type(struct lua_State *L, const char *type_name,
 }
 
 LUALIB_API void
-luaL_register_module(struct lua_State *L, const char *modname,
+luaT_register_module(struct lua_State *L, const char *modname,
 		     const struct luaL_Reg *methods)
 {
 	lj_assertL(methods != NULL && modname != NULL); /* use luaL_register instead */
@@ -278,7 +278,7 @@ luaL_register_module(struct lua_State *L, const char *modname,
 #define DBL_INT_MIN (-1e14 + 1)
 
 LUALIB_API void
-luaL_pushuint64(struct lua_State *L, uint64_t val)
+luaT_pushuint64(struct lua_State *L, uint64_t val)
 {
 #if defined(LJ_DUALNUM) /* see setint64V() */
 	if (val <= INT32_MAX) {
@@ -296,7 +296,7 @@ luaL_pushuint64(struct lua_State *L, uint64_t val)
 }
 
 LUALIB_API void
-luaL_pushint64(struct lua_State *L, int64_t val)
+luaT_pushint64(struct lua_State *L, int64_t val)
 {
 #if defined(LJ_DUALNUM) /* see setint64V() */
 	if (val >= INT32_MIN && val <= INT32_MAX) {
@@ -314,7 +314,7 @@ luaL_pushint64(struct lua_State *L, int64_t val)
 }
 
 int
-luaL_convertint64(lua_State *L, int idx, int unsignd, int64_t *result)
+luaT_convertint64(lua_State *L, int idx, int unsignd, int64_t *result)
 {
 	uint32_t ctypeid;
 	void *cdata;
@@ -374,7 +374,7 @@ luaL_convertint64(lua_State *L, int idx, int unsignd, int64_t *result)
 }
 
 LUALIB_API uint64_t
-luaL_checkuint64(struct lua_State *L, int idx)
+luaT_checkuint64(struct lua_State *L, int idx)
 {
 	int64_t result;
 	if (luaL_convertint64(L, idx, 1, &result) != 0) {
@@ -386,7 +386,7 @@ luaL_checkuint64(struct lua_State *L, int idx)
 }
 
 LUALIB_API int64_t
-luaL_checkint64(struct lua_State *L, int idx)
+luaT_checkint64(struct lua_State *L, int idx)
 {
 	int64_t result;
 	if (luaL_convertint64(L, idx, 1, &result) != 0) {
@@ -398,7 +398,7 @@ luaL_checkint64(struct lua_State *L, int idx)
 }
 
 LUALIB_API uint64_t
-luaL_touint64(struct lua_State *L, int idx)
+luaT_touint64(struct lua_State *L, int idx)
 {
 	int64_t result;
 	if (luaL_convertint64(L, idx, 1, &result) == 0)
@@ -407,7 +407,7 @@ luaL_touint64(struct lua_State *L, int idx)
 }
 
 LUALIB_API int64_t
-luaL_toint64(struct lua_State *L, int idx)
+luaT_toint64(struct lua_State *L, int idx)
 {
 	int64_t result;
 	if (luaL_convertint64(L, idx, 1, &result) == 0)
@@ -444,7 +444,7 @@ luaT_tolstring(lua_State *L, int idx, size_t *len)
 
 /* Based on ffi_meta___call() from luajit/src/lib_ffi.c. */
 LUALIB_API int
-luaL_cdata_iscallable(lua_State *L, int idx)
+luaT_cdata_iscallable(lua_State *L, int idx)
 {
 	/* Calculate absolute value in the stack. */
 	if (idx < 0)
@@ -467,7 +467,7 @@ luaL_cdata_iscallable(lua_State *L, int idx)
 }
 
 LUALIB_API int
-luaL_iscallable(lua_State *L, int idx)
+luaT_iscallable(lua_State *L, int idx)
 {
 	/* Whether it is function. */
 	int res = lua_isfunction(L, idx);

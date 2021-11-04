@@ -62,7 +62,7 @@ extern "C" {
  * @retval 0   Otherwise.
  */
 LUA_API int
-luaL_iscdata(struct lua_State *L, int idx);
+luaT_iscdata(struct lua_State *L, int idx);
 
 /**
  * @brief Push cdata of given \a ctypeid onto the stack.
@@ -74,7 +74,7 @@ luaL_iscdata(struct lua_State *L, int idx);
  * @return memory associated with this cdata
  */
 LUA_API void *
-luaL_pushcdata(struct lua_State *L, uint32_t ctypeid);
+luaT_pushcdata(struct lua_State *L, uint32_t ctypeid);
 
 /**
  * @brief Checks whether the function argument idx is a cdata
@@ -85,7 +85,7 @@ luaL_pushcdata(struct lua_State *L, uint32_t ctypeid);
  * @return memory associated with this cdata
  */
 LUA_API void *
-luaL_checkcdata(struct lua_State *L, int idx, uint32_t *ctypeid);
+luaT_checkcdata(struct lua_State *L, int idx, uint32_t *ctypeid);
 
 /**
  * @brief Sets finalizer function on a cdata object.
@@ -95,7 +95,7 @@ luaL_checkcdata(struct lua_State *L, int idx, uint32_t *ctypeid);
  * @param idx object
  */
 LUA_API void
-luaL_setcdatagc(struct lua_State *L, int idx);
+luaT_setcdatagc(struct lua_State *L, int idx);
 
 /**
 * @brief Return CTypeID (FFI) of given СDATA type
@@ -106,7 +106,7 @@ luaL_setcdatagc(struct lua_State *L, int idx);
 * @return CTypeID
 */
 LUA_API uint32_t
-luaL_ctypeid(struct lua_State *L, const char *ctypename);
+luaT_ctypeid(struct lua_State *L, const char *ctypename);
 
 /**
 * @brief Declare symbols for FFI
@@ -117,7 +117,7 @@ luaL_ctypeid(struct lua_State *L, const char *ctypename);
 * @retval LUA_ERRRUN, LUA_ERRMEM, LUA_ERRERR otherwise
 */
 LUA_API int
-luaL_cdef(struct lua_State *L, const char *ctypename);
+luaT_cdef(struct lua_State *L, const char *ctypename);
 
 /** \endcond public */
 
@@ -131,11 +131,11 @@ luaL_cdef(struct lua_State *L, const char *ctypename);
  * @return CTypeID
  */
 LUA_API uint32_t
-luaL_metatype(struct lua_State *L, const char *ctypename,
+luaT_metatype(struct lua_State *L, const char *ctypename,
 	      const struct luaL_Reg *methods);
 
 static inline lua_Integer
-luaL_arrlen(struct lua_State *L, int idx)
+luaT_arrlen(struct lua_State *L, int idx)
 {
 	lua_Integer max = 0;
 	lua_pushnil(L);
@@ -152,7 +152,7 @@ luaL_arrlen(struct lua_State *L, int idx)
 }
 
 static inline lua_Integer
-luaL_maplen(struct lua_State *L, int idx)
+luaT_maplen(struct lua_State *L, int idx)
 {
 	lua_Integer size = 0;
 	lua_pushnil(L);
@@ -164,12 +164,12 @@ luaL_maplen(struct lua_State *L, int idx)
 }
 
 LUA_API void
-luaL_register_type(struct lua_State *L, const char *type_name,
+luaT_register_type(struct lua_State *L, const char *type_name,
 		   const struct luaL_Reg *methods);
 
 
 LUA_API void
-luaL_register_module(struct lua_State *L, const char *modname,
+luaT_register_module(struct lua_State *L, const char *modname,
 		     const struct luaL_Reg *methods);
 
 /** \cond public */
@@ -181,7 +181,7 @@ luaL_register_module(struct lua_State *L, const char *modname,
  * @param val is a value to push
  */
 LUA_API void
-luaL_pushuint64(struct lua_State *L, uint64_t val);
+luaT_pushuint64(struct lua_State *L, uint64_t val);
 
 /**
  * Push int64_t onto the stack
@@ -190,7 +190,7 @@ luaL_pushuint64(struct lua_State *L, uint64_t val);
  * @param val is a value to push
  */
 LUA_API void
-luaL_pushint64(struct lua_State *L, int64_t val);
+luaT_pushint64(struct lua_State *L, int64_t val);
 
 /**
  * Checks whether the argument idx is a uint64 or a convertable string and
@@ -198,7 +198,7 @@ luaL_pushint64(struct lua_State *L, int64_t val);
  * \throws error if the argument can't be converted.
  */
 LUA_API uint64_t
-luaL_checkuint64(struct lua_State *L, int idx);
+luaT_checkuint64(struct lua_State *L, int idx);
 
 /**
  * Checks whether the argument idx is a int64 or a convertable string and
@@ -206,7 +206,7 @@ luaL_checkuint64(struct lua_State *L, int idx);
  * \throws error if the argument can't be converted.
  */
 LUA_API int64_t
-luaL_checkint64(struct lua_State *L, int idx);
+luaT_checkint64(struct lua_State *L, int idx);
 
 /**
  * Checks whether the argument idx is a uint64 or a convertable string and
@@ -214,7 +214,7 @@ luaL_checkint64(struct lua_State *L, int idx);
  * \return the converted number or 0 of argument can't be converted.
  */
 LUA_API uint64_t
-luaL_touint64(struct lua_State *L, int idx);
+luaT_touint64(struct lua_State *L, int idx);
 
 /**
  * Checks whether the argument idx is a int64 or a convertable string and
@@ -222,12 +222,7 @@ luaL_touint64(struct lua_State *L, int idx);
  * \return the converted number or 0 of argument can't be converted.
  */
 LUA_API int64_t
-luaL_toint64(struct lua_State *L, int idx);
-
-/**
- * Like lua_call(), but with the proper support of Tarantool errors.
- * \sa lua_call()
- */
+luaT_toint64(struct lua_State *L, int idx);
 
 /**
  * Like lua_tolstring, but supports metatables, booleans and nil properly.
@@ -243,7 +238,7 @@ luaT_tolstring(lua_State *L, int idx, size_t *ssize);
  * field.
  */
 LUA_API int
-luaL_iscallable(lua_State *L, int idx);
+luaT_iscallable(lua_State *L, int idx);
 
 /**
  * Push ffi's NULL (cdata<void *>: NULL) onto the stack.
