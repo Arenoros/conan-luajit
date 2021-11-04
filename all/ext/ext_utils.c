@@ -138,7 +138,7 @@ luaT_ctypeid(struct lua_State *L, const char *ctypename)
 	lua_call(L, 1, 1);
 	/* Returned type must be LUA_TCDATA with CTID_CTYPEID */
 	uint32_t ctypetypeid;
-	CTypeID ctypeid = *(CTypeID *)luaL_checkcdata(L, idx + 1, &ctypetypeid);
+	CTypeID ctypeid = *(CTypeID *)luaT_checkcdata(L, idx + 1, &ctypetypeid);
 	lj_assertL(ctypetypeid == CTID_CTYPEID);
 
 	lua_settop(L, idx);
@@ -152,7 +152,7 @@ luaT_metatype(struct lua_State *L, const char *ctypename,
 	      const struct luaL_Reg *methods)
 {
 	/* Create a metatable for our ffi metatype. */
-	luaL_register_type(L, ctypename, methods);
+	luaT_register_type(L, ctypename, methods);
 	int idx = lua_gettop(L);
 	/*
 	 * Get ffi.metatype function. It is like typeof with
@@ -168,7 +168,7 @@ luaT_metatype(struct lua_State *L, const char *ctypename,
 	lj_assertL(lua_gettop(L) == idx + 3 && lua_istable(L, idx + 3));
 	lua_call(L, 2, 1);
 	uint32_t ctypetypeid;
-	CTypeID ctypeid = *(CTypeID *)luaL_checkcdata(L, idx + 1, &ctypetypeid);
+	CTypeID ctypeid = *(CTypeID *)luaT_checkcdata(L, idx + 1, &ctypetypeid);
 	lj_assertL(ctypetypeid == CTID_CTYPEID);
 
 	lua_settop(L, idx);
@@ -291,7 +291,7 @@ luaT_pushuint64(struct lua_State *L, uint64_t val)
 		lua_pushnumber(L, (double) val);
 	} else {
 		/* push uint64_t */
-		*(uint64_t *) luaL_pushcdata(L, CTID_UINT64) = val;
+		*(uint64_t *) luaT_pushcdata(L, CTID_UINT64) = val;
 	}
 }
 
@@ -309,7 +309,7 @@ luaT_pushint64(struct lua_State *L, int64_t val)
 		lua_pushnumber(L, (double) val);
 	} else {
 		/* push int64_t */
-		*(int64_t *) luaL_pushcdata(L, CTID_INT64) = val;
+		*(int64_t *) luaT_pushcdata(L, CTID_INT64) = val;
 	}
 }
 
@@ -327,7 +327,7 @@ luaT_convertint64(lua_State *L, int idx, int unsignd, int64_t *result)
 		*result = lua_tonumber(L, idx);
 		return 0;
 	case LUA_TCDATA:
-		cdata = luaL_checkcdata(L, idx, &ctypeid);
+		cdata = luaT_checkcdata(L, idx, &ctypeid);
 		switch (ctypeid) {
 		case CTID_CCHAR:
 		case CTID_INT8:
@@ -377,7 +377,7 @@ LUALIB_API uint64_t
 luaT_checkuint64(struct lua_State *L, int idx)
 {
 	int64_t result;
-	if (luaL_convertint64(L, idx, 1, &result) != 0) {
+	if (luaT_convertint64(L, idx, 1, &result) != 0) {
 		lua_pushfstring(L, "expected uint64_t as %d argument", idx);
 		lua_error(L);
 		return 0;
@@ -389,7 +389,7 @@ LUALIB_API int64_t
 luaT_checkint64(struct lua_State *L, int idx)
 {
 	int64_t result;
-	if (luaL_convertint64(L, idx, 1, &result) != 0) {
+	if (luaT_convertint64(L, idx, 1, &result) != 0) {
 		lua_pushfstring(L, "expected int64_t as %d argument", idx);
 		lua_error(L);
 		return 0;
@@ -401,7 +401,7 @@ LUALIB_API uint64_t
 luaT_touint64(struct lua_State *L, int idx)
 {
 	int64_t result;
-	if (luaL_convertint64(L, idx, 1, &result) == 0)
+	if (luaT_convertint64(L, idx, 1, &result) == 0)
 		return result;
 	return 0;
 }
@@ -410,7 +410,7 @@ LUALIB_API int64_t
 luaT_toint64(struct lua_State *L, int idx)
 {
 	int64_t result;
-	if (luaL_convertint64(L, idx, 1, &result) == 0)
+	if (luaT_convertint64(L, idx, 1, &result) == 0)
 		return result;
 	return 0;
 }
@@ -476,7 +476,7 @@ luaT_iscallable(lua_State *L, int idx)
 
 	/* Whether it is cdata with metatype with __call field. */
 	if (lua_type(L, idx) == LUA_TCDATA)
-		return luaL_cdata_iscallable(L, idx);
+		return luaT_cdata_iscallable(L, idx);
 
 	/* Whether it has metatable with __call field. */
 	res = luaL_getmetafield(L, idx, "__call");
